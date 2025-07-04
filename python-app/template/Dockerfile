@@ -1,4 +1,4 @@
-FROM python:3.13-alpine
+FROM ${{values.app_img}}
 
 COPY requirements.txt /tmp
 

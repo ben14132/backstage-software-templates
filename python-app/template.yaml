@@ -13,6 +13,7 @@ spec:
       required:
         - component_id
         - environment
+        - base_image
       properties:
         component_id:
           title: Component name
@@ -26,6 +27,10 @@ spec:
           enum:
             - dev
             - prod
+        base_image:
+          title: Base Image
+          type: string
+          description: The base image used to build the app
 
   steps:
     - id: fetch-base
@@ -36,6 +41,7 @@ spec:
         values:
           app_name: ${{parameters.component_id}}
           app_env: ${{parameters.environment}}
+          app_img: ${{parameters.base_image}}
 
     - id: publish
       name: Publish
