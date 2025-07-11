@@ -31,6 +31,12 @@ jobs:
           username: ${{ '${{ secrets.DOCKERHUB_USERNAME }}' }} 
           password: ${{ '${{ secrets.DOCKERHUB_TOKEN }}' }}
       
+      - name: Debug directory structure
+        shell: cmd
+        run: |
+          echo "Root directory:"
+          ls -la
+
       - name: Build and push
         uses: docker/build-push-action@v6
         with:
