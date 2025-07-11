@@ -58,18 +58,18 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: Modify values file
-        shell: cmd
-        run: | #changed
-          echo ${{ '${{needs.ci.outputs.commit_id}}' }}
-          pip install yq
-          yq -Yi ".image.tag = \"${{ '${{needs.ci.outputs.commit_id}}' }}\"" charts/${{values.app_name}}/values-${{values.app_env}}.yaml
+      # - name: Modify values file
+      #   shell: cmd
+      #   run: | #changed
+      #     echo ${{ '${{needs.ci.outputs.commit_id}}' }}
+      #     pip install yq
+      #     yq -Yi ".image.tag = \"${{ '${{needs.ci.outputs.commit_id}}' }}\"" charts/${{values.app_name}}/values-${{values.app_env}}.yaml
       
 
-      - name: Commit changes
-        uses: EndBug/add-and-commit@v9
-        with: 
-          message: 'Updates values.yaml with commit ${{ "${{needs.ci.outputs.commit_id}}" }}'
+      # - name: Commit changes
+      #   uses: EndBug/add-and-commit@v9
+      #   with: 
+      #     message: 'Updates values.yaml with commit ${{ "${{needs.ci.outputs.commit_id}}" }}'
 
       - name: Deploy with helm 
         shell: cmd
