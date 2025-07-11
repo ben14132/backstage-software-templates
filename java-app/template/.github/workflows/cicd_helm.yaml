@@ -36,6 +36,12 @@ jobs:
         run: |
           echo "Root directory:"
           dir
+          echo "src directory"
+          dir src\
+          echo "springapi dir"
+          dir src\SpringAPI
+          echo "target dir"
+          dir src\SpringAPI\target
 
       - name: Build and push
         uses: docker/build-push-action@v6
