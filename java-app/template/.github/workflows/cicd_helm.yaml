@@ -35,7 +35,7 @@ jobs:
         shell: cmd
         run: |
           echo "Root directory:"
-          ls -la
+          dir
 
       - name: Build and push
         uses: docker/build-push-action@v6
