@@ -1,9 +1,9 @@
 apiVersion: scaffolder.backstage.io/v1beta3
 kind: Template
 metadata:
-  name: python-template
-  title: Python flask template
-  description: Provisions a minimalistic flask application
+  name: java-template
+  title: Java Springboot template
+  description: Provisions a minimalistic springboot application
 spec:
   owner: development
   type: service
@@ -14,6 +14,8 @@ spec:
         - component_id
         - environment
         - base_image
+        - owner
+        - repoURL
       properties:
         component_id:
           title: Component name
@@ -31,6 +33,14 @@ spec:
           title: Base Image
           type: string
           description: The base image used to build the app
+        owner:
+          title: Owner
+          type: string
+          description: Owner of the app
+        repoURL:
+          title: RepoURL
+          type: string
+          description: URL of repo to use
 
   steps:
     - id: fetch-base
