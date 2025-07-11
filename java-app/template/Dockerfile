@@ -1,9 +1,10 @@
-FROM ${{values.app_img}}
+FROM openjdk:17-jdk-slim
 
-COPY requirements.txt /tmp
+WORKDIR /app
 
-RUN pip install -r /tmp/requirements.txt
+COPY src/SpringAPI/target/SpringAPI-0.0.1-SNAPSHOT.jar /app/my-spring-boot-app.jar
 
-COPY ./src /src
+EXPOSE 8081
 
-CMD python /src/app.py
+CMD ["java", "-jar", "/app/my-spring-boot-app.jar"]
+
