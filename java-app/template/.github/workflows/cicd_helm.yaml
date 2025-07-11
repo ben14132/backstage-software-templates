@@ -62,8 +62,8 @@ jobs:
         shell: cmd
         run: | #changed
           echo ${{ '${{needs.ci.outputs.commit_id}}' }}
-          wsl pip install yq
-          wsl yq -Yi '.image.tag = "${{ '${{needs.ci.outputs.commit_id}}' }}"' charts/${{values.app_name}}/values-${{values.app_env}}.yaml
+          pip install yq
+          yq -Yi '.image.tag = "${{ '${{needs.ci.outputs.commit_id}}' }}"' charts/${{values.app_name}}/values-${{values.app_env}}.yaml
       
 
       - name: Commit changes
