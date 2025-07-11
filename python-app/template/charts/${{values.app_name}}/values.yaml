@@ -31,11 +31,11 @@ ingress:
 resources: {}
 livenessProbe:
   httpGet:
-    path: /api/v1/health
+    path: /actuator/health
     port: http
 readinessProbe:
   httpGet:
-    path: /api/v1/health
+    path: /actuator/health
     port: http
 autoscaling:
   enabled: false
