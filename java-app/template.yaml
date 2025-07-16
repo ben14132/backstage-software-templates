@@ -1,0 +1,125 @@
+apiVersion: scaffolder.backstage.io/v1beta3
+kind: Template
+metadata:
+  name: java-template
+  title: Java Springboot template
+  description: Provisions a minimalistic springboot application
+spec:
+  owner: development
+  type: service
+
+  parameters:
+    - title: Fill in some steps
+      required:
+        - component_id
+        - environment
+        - base_image
+        - owner
+        - repoURL
+      properties:
+        component_id:
+          title: Component name
+          type: string
+          description: Provide a component (microservice) name
+          pattern: '^([a-zA-Z][a-zA-Z0-9]*)(-[a-zA-Z0-9]+)*$'
+        environment:
+          title: Environment
+          type: string
+          description: The environment where this component will be deployed
+          enum:
+            - dev
+            - prod
+        base_image:
+          title: Base Image
+          type: string
+          description: The base image used to build the app
+        owner:
+          title: Owner
+          type: string
+          description: Owner of the app
+        repoURL:
+          title: RepoURL
+          type: string
+          description: URL of repo to use
+
+  steps:
+    - id: fetch-base
+      name: Fetch Base
+      action: fetch:template
+      input:
+        url: ./template
+        values:
+          app_name: ${{parameters.component_id}}
+          app_env: ${{parameters.environment}}
+          app_img: ${{parameters.base_image}}
+
+    - id: publish
+      name: Publish
+      action: publish:github
+      input:
+        description: This is ${{ parameters.component_id }}
+        repoUrl: github.com?owner=ben14132-01&repo=${{parameters.component_id}}
+        protectDefaultBranch: false
+        repoVisibility: public
+
+    # - id: create-jenkins-job
+    #   name: Create Jenkins Job
+    #   action: http:backstage:request
+    #   input:
+    #     method: POST
+    #     url: '/api/proxy/jenkins/createItem'
+    #     headers:
+    #       'Content-Type': 'application/xml'
+    #     params:
+    #       name: ${{parameters.component_id}}-pipeline
+    #     body: |
+    #       <?xml version='1.1' encoding='UTF-8'?>
+    #       <flow-definition plugin="workflow-job@2.40">
+    #         <actions/>
+    #         <description>Pipeline for ${{ parameters.component_id }}</description>
+    #         <keepDependencies>false</keepDependencies>
+    #         <properties>
+    #           <org.jenkinsci.plugins.workflow.job.properties.PipelineTriggersJobProperty>
+    #             <triggers>
+    #               <com.cloudbees.jenkins.GitHubPushTrigger plugin="github@1.34.1">
+    #                 <spec></spec>
+    #               </com.cloudbees.jenkins.GitHubPushTrigger>
+    #             </triggers>
+    #           </org.jenkinsci.plugins.workflow.job.properties.PipelineTriggersJobProperty>
+    #         </properties>
+    #         <definition class="org.jenkinsci.plugins.workflow.cps.CpsScmFlowDefinition" plugin="workflow-cps@2.87">
+    #           <scm class="hudson.plugins.git.GitSCM" plugin="git@4.8.2">
+    #             <configVersion>2</configVersion>
+    #             <userRemoteConfigs>
+    #               <hudson.plugins.git.UserRemoteConfig>
+    #                 <url>${{ steps['publish'].output.remoteUrl }}</url>
+    #                  <credentialsId></credentialsId>
+    #               </hudson.plugins.git.UserRemoteConfig>
+    #             </userRemoteConfigs>
+    #             <branches>
+    #               <hudson.plugins.git.BranchSpec>
+    #                 <name>*/main</name>
+    #               </hudson.plugins.git.BranchSpec>
+    #             </branches>
+    #             <doGenerateSubmoduleConfigurations>false</doGenerateSubmoduleConfigurations>
+    #             <submoduleCfg class="list"/>
+    #             <extensions/>
+    #           </scm>
+    #           <scriptPath>Jenkinsfile</scriptPath>
+    #           <lightweight>true</lightweight>
+    #         </definition>
+    #         <triggers/>
+    #         <disabled>false</disabled>
+    #       </flow-definition>
+
+    - id: register
+      name: Register
+      action: catalog:register
+      input:
+        repoContentsUrl: ${{ steps['publish'].output.repoContentsUrl }}
+        catalogInfoPath: "/catalog-info.yaml"
+
+  output:
+    links:
+      - title: Repository
+        url: ${{ steps['publish'].output.remoteUrl }}

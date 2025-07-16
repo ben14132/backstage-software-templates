@@ -1,0 +1,116 @@
+pipeline {
+    agent {
+        label 'windows'
+    }
+
+    environment {
+        DOCKERHUB_USERNAME = credentials('DOCKERHUB_USERNAME')
+        DOCKERHUB_TOKEN = credentials('DOCKERHUB_TOKEN')
+        SONAR_TOKEN = credentials('SONAR_TOKEN_BEN')
+        COMMIT_ID = "${env.GIT_COMMIT.take(6)}"
+    }
+
+    stages {
+        stage('Checkout Code') {
+            steps {
+                checkout scm
+            }
+        }
+
+        stage('Set Commit ID') {
+            steps {
+                script {
+                    env.COMMIT_ID = env.GIT_COMMIT.take(6)
+                    echo "COMMIT_ID set to: ${env.COMMIT_ID}"
+                }
+            }
+        }
+
+        stage('Create SonarQube Project') {
+            steps {
+                script {
+                    def response = bat(
+                        script: '''
+                        curl -X POST ^
+                        -u admin:admin ^
+                        "http://localhost:9001/api/projects/create?project=${{ values.app_name }}&name=${{ values.app_name }}"
+                        ''',
+                        returnStatus: true
+                    )
+                    
+                    if (response == 0) {
+                        echo "SonarQube project created successfully"
+                    } else if (response == 22) {
+                        echo "Project already exists or other HTTP error - continuing..."
+                    } else {
+                        error "Failed to create SonarQube project"
+                    }
+                }
+            }
+        }
+
+
+        stage('SonarQube Analysis') {
+            steps {
+                dir('src/SpringAPI') {
+                    bat '''
+                    mvn clean verify sonar:sonar "-Dsonar.projectKey=${{ values.app_name }}" "-Dsonar.projectName='${{ values.app_name }}'" "-Dsonar.host.url=http://localhost:9001" "-Dsonar.token=%SONAR_TOKEN%"
+                    '''
+                }
+            }
+        }
+
+
+        stage('Login to Docker Hub') {
+            steps {
+                bat '''
+                    echo %DOCKERHUB_TOKEN% | docker login --username %DOCKERHUB_USERNAME% --password-stdin
+                '''
+            }
+        }
+
+        // stage('Debug Directory Structure') {
+        //     steps {
+        //         bat '''
+        //             echo "Root directory:"
+        //             dir
+        //             echo "src directory"
+        //             dir src\\
+        //             echo "springapi dir"
+        //             dir src\\SpringAPI
+        //             echo "target dir"
+        //             dir src\\SpringAPI\\target
+        //         '''
+        //     }
+        // }
+
+        stage('Build and Push Docker Image') {
+            steps {
+                script {
+                    def appName = '${{ values.app_name }}' //need to change appname
+                    bat """
+                        docker build -t ben14132/${appName}:${env.COMMIT_ID} .
+                        docker push ben14132/${appName}:${env.COMMIT_ID}
+                    """
+                }
+            }
+        }
+
+        stage('Deploy with Helm') {
+            steps {
+                script {
+                    def commitId = env.COMMIT_ID //change java-app-9 here
+                    bat """
+                        wsl helm upgrade --install java-app ./charts/${{ values.app_name }} -n java --create-namespace --set image.tag=${commitId}
+                    """
+                }
+            }
+        }
+    }
+
+    post {
+        always {
+            bat 'docker logout'
+        }
+    }
+}

@@ -1,0 +1,13 @@
+apiVersion: backstage.io/v1alpha1
+kind: Component
+metadata:
+  name: ${{values.app_name}}
+  description: java springboot app for users - named ${{values.app_name}}
+  annotations:
+    github.com/project-slug: ben14132-01/${{values.app_name}}
+    backstage.io/techdocs-ref: dir:.
+    'jenkins.io/job-full-name': java/${{values.app_name}}
+spec:
+  type: service
+  owner: development
+  lifecycle: experimental 
