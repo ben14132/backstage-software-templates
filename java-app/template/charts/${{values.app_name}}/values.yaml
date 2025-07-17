@@ -45,6 +45,10 @@ autoscaling:
   minReplicas: 1
   maxReplicas: 100
   targetCPUUtilizationPercentage: 80
+serviceMonitor: 
+  enabled: true
+  additionalLabels:
+    release: prometheus
 volumes: []
 volumeMounts: []
 nodeSelector: {}
