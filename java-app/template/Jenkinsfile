@@ -42,7 +42,7 @@ pipeline {
                 script {
                     bat """
                         wsl git config user.email blee070@e.ntu.edu.sg
-                        wsl git config user.name "ben14132"
+                        wsl git config user.name "%DOCKERHUB_USERNAME%"
                         wsl git add gitleaks-report.json
                         wsl git commit -m "Add Gitleaks security scan results for commit ${env.COMMIT_ID}" || echo "No changes to commit"
                         wsl git push origin main
@@ -114,8 +114,8 @@ pipeline {
                 script {
                     def appName = '${{ values.app_name }}' //need to change appname
                     bat """
-                        docker build -t ben14132/${appName}:${env.COMMIT_ID} .
-                        docker push ben14132/${appName}:${env.COMMIT_ID}
+                        docker build -t %DOCKERHUB_USERNAME%/${appName}:${env.COMMIT_ID} .
+                        docker push %DOCKERHUB_USERNAME%/${appName}:${env.COMMIT_ID}
                     """
                 }
             }
@@ -126,7 +126,7 @@ pipeline {
                 script {
                     def appName = '${{ values.app_name }}' 
                     bat """
-                        wsl trivy image --format json --output trivyResults.json --insecure ben14132/${appName}:${env.COMMIT_ID} 
+                        wsl trivy image --format json --output trivyResults.json --insecure %DOCKERHUB_USERNAME%/${appName}:${env.COMMIT_ID} 
                     """
                 }
             }
@@ -137,7 +137,7 @@ pipeline {
                 script {
                     bat '''
                         wsl git config user.email "blee070@e.ntu.edu.sg"
-                        wsl git config user.name "ben14132"
+                        wsl git config user.name "%DOCKERHUB_USERNAME%"
                         wsl git add trivyResults.json
                         wsl git commit -m "Add Trivy security scan results for commit ${env.COMMIT_ID}" || echo "No changes to commit"
                         wsl git push origin main
