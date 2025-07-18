@@ -44,7 +44,7 @@ pipeline {
                     bat """
                         wsl git config user.email blee070@e.ntu.edu.sg
                         wsl git config user.name "%DOCKERHUB_USERNAME%"
-                        wsl git remote set-url origin https://%DOCKERHUB_USERNAME%:%GITHUB_TOKEN%@github.com/ben14132-01/java-app-6.git
+                        wsl git remote set-url origin https://%DOCKERHUB_USERNAME%:%GITHUB_TOKEN%@github.com/ben14132-01/${{ values.app_name }}.git
                         wsl git add gitleaks-report.json
                         wsl git commit -m "Add Gitleaks security scan results for commit ${env.COMMIT_ID}" || echo "No changes to commit"
                         wsl git push origin HEAD:main
@@ -140,7 +140,7 @@ pipeline {
                     bat '''
                         wsl git config user.email blee070@e.ntu.edu.sg
                         wsl git config user.name "%DOCKERHUB_USERNAME%"
-                        wsl git remote set-url origin https://%DOCKERHUB_USERNAME%:%GITHUB_TOKEN%@github.com/ben14132-01/java-app-6.git
+                        wsl git remote set-url origin https://%DOCKERHUB_USERNAME%:%GITHUB_TOKEN%@github.com/ben14132-01/${{ values.app_name }}.git
                         wsl git add trivyResults.json
                         wsl git commit -m "Add Trivy security scan results for commit ${env.COMMIT_ID}" || echo "No changes to commit"
                         wsl git push origin HEAD:main
