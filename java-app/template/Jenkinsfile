@@ -17,11 +17,36 @@ pipeline {
             }
         }
 
+
         stage('Set Commit ID') {
             steps {
                 script {
                     env.COMMIT_ID = env.GIT_COMMIT.take(6)
                     echo "COMMIT_ID set to: ${env.COMMIT_ID}"
+                }
+            }
+        }
+
+        stage('Gitleaks') {
+            steps {
+                script {
+                    bat '''
+                        wsl gitleaks detect --source . -r gitleaks-report.json -f json
+                    '''
+                }
+            }
+        }
+
+        stage('Commit Gitleaks Results') {
+            steps {
+                script {
+                    bat """
+                        wsl git config user.email blee070@e.ntu.edu.sg
+                        wsl git config user.name "ben14132"
+                        wsl git add gitleaks-report.json
+                        wsl git commit -m "Add Gitleaks security scan results for commit ${env.COMMIT_ID}" || echo "No changes to commit"
+                        wsl git push origin main
+                    """
                 }
             }
         }
@@ -92,6 +117,31 @@ pipeline {
                         docker build -t ben14132/${appName}:${env.COMMIT_ID} .
                         docker push ben14132/${appName}:${env.COMMIT_ID}
                     """
+                }
+            }
+        }
+
+        stage('Trivy Scan') {
+            steps {
+                script {
+                    def appName = '${{ values.app_name }}' 
+                    bat """
+                        wsl trivy image --format json --output trivyResults.json --insecure ben14132/${appName}:${env.COMMIT_ID} 
+                    """
+                }
+            }
+        }
+
+        stage('Commit Trivy Results') {
+            steps {
+                script {
+                    bat '''
+                        wsl git config user.email "blee070@e.ntu.edu.sg"
+                        wsl git config user.name "ben14132"
+                        wsl git add trivyResults.json
+                        wsl git commit -m "Add Trivy security scan results for commit ${env.COMMIT_ID}" || echo "No changes to commit"
+                        wsl git push origin main
+                    '''
                 }
             }
         }
