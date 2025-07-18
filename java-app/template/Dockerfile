@@ -1,4 +1,4 @@
-FROM openjdk:17-jdk-slim
+FROM ${{values.app_img}}
 
 WORKDIR /app
 

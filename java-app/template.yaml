@@ -15,7 +15,6 @@ spec:
         - environment
         - base_image
         - owner
-        - repoURL
       properties:
         component_id:
           title: Component name
@@ -37,10 +36,6 @@ spec:
           title: Owner
           type: string
           description: Owner of the app
-        repoURL:
-          title: RepoURL
-          type: string
-          description: URL of repo to use
 
   steps:
     - id: fetch-base
