@@ -45,7 +45,7 @@ pipeline {
                         wsl git config user.name "%DOCKERHUB_USERNAME%"
                         wsl git add gitleaks-report.json
                         wsl git commit -m "Add Gitleaks security scan results for commit ${env.COMMIT_ID}" || echo "No changes to commit"
-                        wsl git push origin main
+                        wsl git push 
                     """
                 }
             }
@@ -140,7 +140,7 @@ pipeline {
                         wsl git config user.name "%DOCKERHUB_USERNAME%"
                         wsl git add trivyResults.json
                         wsl git commit -m "Add Trivy security scan results for commit ${env.COMMIT_ID}" || echo "No changes to commit"
-                        wsl git push origin main
+                        wsl git push
                     '''
                 }
             }
