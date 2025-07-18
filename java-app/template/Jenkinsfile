@@ -8,6 +8,7 @@ pipeline {
         DOCKERHUB_TOKEN = credentials('DOCKERHUB_TOKEN')
         SONAR_TOKEN = credentials('SONAR_TOKEN_BEN')
         GITHUB_TOKEN = credentials('GITHUB_TOKEN_BEN')
+        SNYK_TOKEN = credentials('SNYK_TOKEN_BEN')
         COMMIT_ID = "${env.GIT_COMMIT.take(6)}"
     }
 
@@ -24,6 +25,18 @@ pipeline {
                 script {
                     env.COMMIT_ID = env.GIT_COMMIT.take(6)
                     echo "COMMIT_ID set to: ${env.COMMIT_ID}"
+                }
+            }
+        }
+
+        stage('Snyk Scan') {
+            steps {
+                script {
+                    bat """
+                        snyk auth %SNYK_TOKEN%
+                        snyk test 
+                        snyk monitor 
+                    """
                 }
             }
         }
