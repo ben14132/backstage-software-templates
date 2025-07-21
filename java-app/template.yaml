@@ -36,17 +36,18 @@ spec:
           title: Owner
           type: string
           description: Owner of the app
-    - title: Pipeline Configuration
+    - title: Select Security Scans
       properties:
         enabledStages:
-          title: Select Pipeline Stages
+          title: Select Security Scans
           type: array
           items:
             type: string
             enum:
-              - build
-              - test
-              - deploy
+              - SonarQube
+              - Gitleaks
+              - Snyk
+              - Trivy
           uniqueItems: true
           ui:widget: checkboxes
 
