@@ -85,6 +85,7 @@ pipeline {
         stage('Create SonarQube Project') {
             when {
                 expression {params.SONARQUBE}
+            }
             steps {
                 script {
                     def response = bat(
