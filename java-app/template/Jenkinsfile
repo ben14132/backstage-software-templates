@@ -12,6 +12,10 @@ pipeline {
         COMMIT_ID = "${env.GIT_COMMIT.take(6)}"
     }
 
+    parameters {
+        booleanParam(name: 'Snyk', defaultValue: ${{"true" if "Snyk" in values.enabledStages else "false" }}, descrption: 'Perform Snyk Scan')
+    }
+
     stages {
         stage('Checkout Code') {
             steps {
