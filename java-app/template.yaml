@@ -47,6 +47,8 @@ spec:
               - build
               - test
               - deploy
+          uniqueItems: true
+          ui:widget: checkboxes
 
   steps:
     - id: fetch-base
