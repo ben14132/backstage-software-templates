@@ -47,7 +47,9 @@ spec:
               - build
               - test
               - deploy
-          ui:widget: checkboxes
+          ui:widget: select
+          ui:options:
+            multiple: true
 
 
   steps:
