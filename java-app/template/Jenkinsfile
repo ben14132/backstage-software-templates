@@ -13,7 +13,10 @@ pipeline {
     }
 
     parameters {
-        booleanParam(name: 'Snyk', defaultValue: ${{"true" if "Snyk" in values.enabledStages else "false" }}, descrption: 'Perform Snyk Scan')
+        booleanParam(name: 'SNYK', defaultValue: ${{"true" if "Snyk" in values.enabledStages else "false" }}, descrption: 'Perform Snyk Scan')
+        booleanParam(name: 'SONARQUBE', defaultValue: ${{"true" if "SonarQube" in values.enabledStages else "false" }}, descrption: 'Perform SonarQube Scan')
+        booleanParam(name: 'GITLEAKS', defaultValue: ${{"true" if "Gitleaks" in values.enabledStages else "false" }}, descrption: 'Perform Gitleaks Scan')
+        booleanParam(name: 'TRIVY', defaultValue: ${{"true" if "Trivy" in values.enabledStages else "false" }}, descrption: 'Perform Trivy Scan')
     }
 
     stages {
@@ -34,6 +37,9 @@ pipeline {
         }
 
         stage('Snyk Scan') {
+            when {
+                {params.SNYK}
+            }
             steps {
                 script {
                     bat """
@@ -46,6 +52,9 @@ pipeline {
         }
 
         stage('Gitleaks') {
+            when {
+                {params.GITLEAKS}
+            }
             steps {
                 script {
                     bat '''
@@ -56,6 +65,9 @@ pipeline {
         }
 
         stage('Commit Gitleaks Results') {
+            when {
+                {params.GITLEAKS}
+            }
             steps {
                 script {
                     bat """
@@ -71,6 +83,9 @@ pipeline {
         }
 
         stage('Create SonarQube Project') {
+            when {
+                {params.SONARQUBE}
+            }
             steps {
                 script {
                     def response = bat(
@@ -95,6 +110,9 @@ pipeline {
 
 
         stage('SonarQube Analysis') {
+            when {
+                {params.SONARQUBE}
+            }
             steps {
                 dir('src/SpringAPI') {
                     bat '''
@@ -141,6 +159,9 @@ pipeline {
         }
 
         stage('Trivy Scan') {
+            when {
+                {params.TRIVY}
+            }
             steps {
                 script {
                     def appName = '${{ values.app_name }}' 
@@ -152,6 +173,9 @@ pipeline {
         }
 
         stage('Commit Trivy Results') {
+            when {
+                {params.TRIVY}
+            }
             steps {
                 script {
                     bat """
