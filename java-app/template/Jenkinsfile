@@ -38,7 +38,7 @@ pipeline {
 
         stage('Snyk Scan') {
             when {
-                {params.SNYK}
+                params.SNYK
             }
             steps {
                 script {
@@ -53,7 +53,7 @@ pipeline {
 
         stage('Gitleaks') {
             when {
-                {params.GITLEAKS}
+                params.GITLEAKS
             }
             steps {
                 script {
@@ -66,7 +66,7 @@ pipeline {
 
         stage('Commit Gitleaks Results') {
             when {
-                {params.GITLEAKS}
+                params.GITLEAKS
             }
             steps {
                 script {
@@ -84,7 +84,7 @@ pipeline {
 
         stage('Create SonarQube Project') {
             when {
-                {params.SONARQUBE}
+                params.SONARQUBE
             }
             steps {
                 script {
@@ -111,7 +111,7 @@ pipeline {
 
         stage('SonarQube Analysis') {
             when {
-                {params.SONARQUBE}
+                params.SONARQUBE
             }
             steps {
                 dir('src/SpringAPI') {
@@ -160,7 +160,7 @@ pipeline {
 
         stage('Trivy Scan') {
             when {
-                {params.TRIVY}
+                params.TRIVY
             }
             steps {
                 script {
@@ -174,7 +174,7 @@ pipeline {
 
         stage('Commit Trivy Results') {
             when {
-                {params.TRIVY}
+                params.TRIVY
             }
             steps {
                 script {
