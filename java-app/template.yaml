@@ -47,10 +47,6 @@ spec:
               - build
               - test
               - deploy
-          ui:widget: select
-          ui:options:
-            multiple: true
-
 
   steps:
     - id: fetch-base
@@ -72,56 +68,6 @@ spec:
         repoUrl: github.com?owner=ben14132-01&repo=${{parameters.component_id}}
         protectDefaultBranch: false
         repoVisibility: public
-
-    # - id: create-jenkins-job
-    #   name: Create Jenkins Job
-    #   action: http:backstage:request
-    #   input:
-    #     method: POST
-    #     url: '/api/proxy/jenkins/createItem'
-    #     headers:
-    #       'Content-Type': 'application/xml'
-    #     params:
-    #       name: ${{parameters.component_id}}-pipeline
-    #     body: |
-    #       <?xml version='1.1' encoding='UTF-8'?>
-    #       <flow-definition plugin="workflow-job@2.40">
-    #         <actions/>
-    #         <description>Pipeline for ${{ parameters.component_id }}</description>
-    #         <keepDependencies>false</keepDependencies>
-    #         <properties>
-    #           <org.jenkinsci.plugins.workflow.job.properties.PipelineTriggersJobProperty>
-    #             <triggers>
-    #               <com.cloudbees.jenkins.GitHubPushTrigger plugin="github@1.34.1">
-    #                 <spec></spec>
-    #               </com.cloudbees.jenkins.GitHubPushTrigger>
-    #             </triggers>
-    #           </org.jenkinsci.plugins.workflow.job.properties.PipelineTriggersJobProperty>
-    #         </properties>
-    #         <definition class="org.jenkinsci.plugins.workflow.cps.CpsScmFlowDefinition" plugin="workflow-cps@2.87">
-    #           <scm class="hudson.plugins.git.GitSCM" plugin="git@4.8.2">
-    #             <configVersion>2</configVersion>
-    #             <userRemoteConfigs>
-    #               <hudson.plugins.git.UserRemoteConfig>
-    #                 <url>${{ steps['publish'].output.remoteUrl }}</url>
-    #                  <credentialsId></credentialsId>
-    #               </hudson.plugins.git.UserRemoteConfig>
-    #             </userRemoteConfigs>
-    #             <branches>
-    #               <hudson.plugins.git.BranchSpec>
-    #                 <name>*/main</name>
-    #               </hudson.plugins.git.BranchSpec>
-    #             </branches>
-    #             <doGenerateSubmoduleConfigurations>false</doGenerateSubmoduleConfigurations>
-    #             <submoduleCfg class="list"/>
-    #             <extensions/>
-    #           </scm>
-    #           <scriptPath>Jenkinsfile</scriptPath>
-    #           <lightweight>true</lightweight>
-    #         </definition>
-    #         <triggers/>
-    #         <disabled>false</disabled>
-    #       </flow-definition>
 
     - id: register
       name: Register
