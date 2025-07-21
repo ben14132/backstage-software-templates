@@ -9,18 +9,6 @@ spec:
   type: service
 
   parameters:
-    - title: Pipeline Configuration
-      properties:
-        enabledStages:
-          title: Select Pipeline Stages
-          type: array
-          items:
-            type: string
-            enum:
-              - build
-              - test
-              - deploy
-          ui:widget: checkboxes
     - title: Fill in Component Information
       required:
         - component_id
@@ -48,6 +36,19 @@ spec:
           title: Owner
           type: string
           description: Owner of the app
+    - title: Pipeline Configuration
+      properties:
+        enabledStages:
+          title: Select Pipeline Stages
+          type: array
+          items:
+            type: string
+            enum:
+              - build
+              - test
+              - deploy
+          ui:widget: checkboxes
+
 
   steps:
     - id: fetch-base
@@ -59,6 +60,7 @@ spec:
           app_name: ${{parameters.component_id}}
           app_env: ${{parameters.environment}}
           app_img: ${{parameters.base_image}}
+          enabledStages: ${{parameters.enabledStages}}
 
     - id: publish
       name: Publish
