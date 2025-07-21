@@ -13,10 +13,10 @@ pipeline {
     }
 
     parameters {
-        booleanParam(name: 'SNYK', defaultValue: ${{"true" if "Snyk" in values.enabledStages else "false" }}, descrption: 'Perform Snyk Scan')
-        booleanParam(name: 'SONARQUBE', defaultValue: ${{"true" if "SonarQube" in values.enabledStages else "false" }}, descrption: 'Perform SonarQube Scan')
-        booleanParam(name: 'GITLEAKS', defaultValue: ${{"true" if "Gitleaks" in values.enabledStages else "false" }}, descrption: 'Perform Gitleaks Scan')
-        booleanParam(name: 'TRIVY', defaultValue: ${{"true" if "Trivy" in values.enabledStages else "false" }}, descrption: 'Perform Trivy Scan')
+        booleanParam(name: 'SNYK', defaultValue: ${{"true" if "Snyk" in values.enabledStages else "false" }}, description: 'Perform Snyk Scan')
+        booleanParam(name: 'SONARQUBE', defaultValue: ${{"true" if "SonarQube" in values.enabledStages else "false" }}, description: 'Perform SonarQube Scan')
+        booleanParam(name: 'GITLEAKS', defaultValue: ${{"true" if "Gitleaks" in values.enabledStages else "false" }}, description: 'Perform Gitleaks Scan')
+        booleanParam(name: 'TRIVY', defaultValue: ${{"true" if "Trivy" in values.enabledStages else "false" }}, description: 'Perform Trivy Scan')
     }
 
     stages {
