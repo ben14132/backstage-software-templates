@@ -216,24 +216,31 @@ pipeline {
             }
         }
 
-        stage('Deploy with ArgoCD') {
+        stage('ArgoCD connect repo') {
             steps {
                 script {
                     bat """
-                        # Connects the argocd repo
-                        wsl repo="https://github.com/ben14132-01/${{values.app_name}}.git"
-                        wsl argocd repo list | wsl grep -q $repo || wsl argocd repo add $repo
+                        wsl argocd repo list | wsl grep -q https://github.com/ben14132-01/${{ values.app_name }}.git || wsl argocd repo add https://github.com/ben14132-01/${{ values.app_name }}.git
+                    """
+                }
+            }
+        }
 
-                        # Creates the argocd app
-                        wsl argocd app get ${{values.app_name}} || wsl argocd app create ${{values.app_name}} \
-                            --repo $repo \
-                            --path charts/${{values.app_name}} \
-                            --dest-namespace ${{values.app_env}} \
+        stage('Deploy with ArgoCD') {
+            steps {
+                script {
+                    def commitId = env.COMMIT_ID
+                    bat """
+                        wsl argocd app get ${{ values.app_name }} || wsl argocd app create ${{ values.app_name }} \
+                            --repo https://github.com/ben14132-01/${{ values.app_name }}.git \
+                            --path charts/${{ values.app_name }} \
+                            --dest-namespace dev \
                             --dest-server https://kubernetes.default.svc \
-                            --values values-${{values.app_env}}.yaml \
+                            --values values-dev.yaml \
                             --revision main \
                             --sync-policy manual \
-                            --sync-option CreateNamespace=true
+                            --sync-option CreateNamespace=true \
+                            --helm-set image.tag=${commitId}
                     """
                 }
             }
@@ -242,8 +249,8 @@ pipeline {
             steps {
                 script {
                     bat """
-                        wsl argocd app sync ${{values.app_name}}
-                        wsl argocd app wait ${{values.app_name}} --timeout 180
+                        wsl argocd app sync ${{ values.app_name }}
+                        wsl argocd app wait ${{ values.app_name }} --timeout 180
                     """
                 }
             }
