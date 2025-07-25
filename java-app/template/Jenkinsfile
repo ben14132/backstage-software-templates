@@ -9,6 +9,7 @@ pipeline {
         SONAR_TOKEN = credentials('SONAR_TOKEN_BEN')
         GITHUB_TOKEN = credentials('GITHUB_TOKEN_BEN')
         SNYK_TOKEN = credentials('SNYK_TOKEN_BEN')
+        ARGOCD_PASSWORD = credentials('ARGOCD_PWD_BEN')
         COMMIT_ID = "${env.GIT_COMMIT.take(6)}"
     }
 
@@ -190,12 +191,59 @@ pipeline {
             }
         }
 
-        stage('Deploy with Helm') {
+        // stage('Deploy with Helm') {
+        //     steps {
+        //         script {
+        //             def commitId = env.COMMIT_ID //change java-app-9 here
+        //             bat """
+        //                 wsl helm upgrade --install java-app ./charts/${{ values.app_name }} -n java --create-namespace --set image.tag=${commitId}
+        //             """
+        //         }
+        //     }
+        // }
+        stage('ArgoCD Login') {
             steps {
                 script {
-                    def commitId = env.COMMIT_ID //change java-app-9 here
+ //add argocd password to jenkins credentials
                     bat """
-                        wsl helm upgrade --install java-app ./charts/${{ values.app_name }} -n java --create-namespace --set image.tag=${commitId}
+                        wsl argocd login localhost:8084 \
+                        --insecure  \
+                        --grpc-web \
+                        --username admin \
+                        --password  %ARGOCD_PASSWORD%
+                    """
+                }
+            }
+        }
+
+        stage('Deploy with ArgoCD') {
+            steps {
+                script {
+                    bat """
+                        # Connects the argocd repo
+                        wsl repo="https://github.com/ben14132-01/${{values.app_name}}.git"
+                        wsl argocd repo list | wsl grep -q $repo || wsl argocd repo add $repo
+
+                        # Creates the argocd app
+                        wsl argocd app get ${{values.app_name}} || wsl argocd app create ${{values.app_name}} \
+                            --repo $repo \
+                            --path charts/${{values.app_name}} \
+                            --dest-namespace ${{values.app_env}} \
+                            --dest-server https://kubernetes.default.svc \
+                            --values values-${{values.app_env}}.yaml \
+                            --revision main \
+                            --sync-policy manual \
+                            --sync-option CreateNamespace=true
+                    """
+                }
+            }
+        }
+        stage('ArgoCD App Sync') {
+            steps {
+                script {
+                    bat """
+                        wsl argocd app sync ${{values.app_name}}
+                        wsl argocd app wait ${{values.app_name}} --timeout 180
                     """
                 }
             }
