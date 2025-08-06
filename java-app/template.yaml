@@ -36,6 +36,30 @@ spec:
           title: Owner
           type: string
           description: Owner of the app
+    - title: Pipeline Configuration 
+      required:
+        - pipeline_tool
+      properties:
+        pipeline_tool:
+          title: Pipeline Tool
+          type: string
+          description: The pipeline tool to be used
+          enum:
+            - Jenkins
+            - Github Actions
+            - Azure DevOps
+        additional_users:
+          title: Additional Users 
+          type: array
+          description: Add usernames of people who should have access to the pipeline
+          items:
+            type: string
+            title: Username 
+            description: Enter a username
+          ui:options:
+            addable: true
+            orderable: false
+            removable: true 
     - title: Select Security Scans
       properties:
         enabledStages:
@@ -50,6 +74,7 @@ spec:
               - Trivy
           uniqueItems: true
           ui:widget: checkboxes
+    
 
   steps:
     - id: fetch-base
