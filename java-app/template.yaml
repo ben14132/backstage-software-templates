@@ -74,7 +74,67 @@ spec:
               - Trivy
           uniqueItems: true
           ui:widget: checkboxes
-    
+    - title: App-Specific Information 
+      required:
+        - app_port
+        - env_properties
+        - docker_ignore_files
+        - packages
+      properties:
+        app_port:
+          title: App Port
+          type: string
+          description: Port that the App should Run On (4-digit number)
+          pattern: '^[0-9]{4}$'
+          default: "8080"
+        env_properties:
+          title: Environment Properties
+          type: array
+          description: Environment Properties Required for App
+          items:
+            type: string
+            title: Env Properties 
+            description: Enter an env property
+          ui:options:
+            addable: true
+            orderable: false
+            removable: true
+        docker_ignore_files:
+          title: Docker Ignore Files
+          type: array
+          description: Docker Ignore Files
+          items:
+            type: string
+            title: Docker Ignore Files 
+            description: Enter a file name
+          ui:options:
+            addable: true
+            orderable: false
+            removable: true 
+        packages:
+          title: Packages
+          type: array
+          description: Packages to be run
+          items:
+            type: string
+            title: Packages to be run 
+            description: Enter a package name
+          ui:options:
+            addable: true
+            orderable: false
+            removable: true 
+    - title: Artifactory
+      required:
+        - artifactory
+      properties:
+        artifactor:
+          title: Artifactory Tool
+          type: string
+          description: The artifactory tool to be used
+          enum:
+            - Jfrog
+            - Nexus
+            - Azure Artifactory
 
   steps:
     - id: fetch-base
