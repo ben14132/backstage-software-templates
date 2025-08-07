@@ -127,7 +127,7 @@ spec:
       required:
         - artifactory
       properties:
-        artifactor:
+        artifactory:
           title: Artifactory Tool
           type: string
           description: The artifactory tool to be used
