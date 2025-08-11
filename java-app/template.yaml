@@ -142,7 +142,7 @@ spec:
       action: fetch:plain
       input:
         url: ./hello.py
-        targetPath: __main__.py
+        targetPath: hello.py
     
     - id: execute-python
       name: Execute python script
