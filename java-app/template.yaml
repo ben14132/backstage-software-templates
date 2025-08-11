@@ -36,112 +36,112 @@ spec:
           title: Owner
           type: string
           description: Owner of the app
-    - title: Pipeline Configuration 
-      required:
-        - pipeline_tool
-      properties:
-        pipeline_tool:
-          title: Pipeline Tool
-          type: string
-          description: The pipeline tool to be used
-          enum:
-            - Jenkins
-            - Github Actions
-            - Azure DevOps
-        additional_users:
-          title: Additional Users 
-          type: array
-          description: Add usernames of people who should have access to the pipeline
-          items:
-            type: string
-            title: Username 
-            description: Enter a username
-          ui:options:
-            addable: true
-            orderable: false
-            removable: true 
-    - title: Select Security Scans
-      properties:
-        enabledStages:
-          title: Select Security Scans
-          type: array
-          items:
-            type: string
-            enum:
-              - SonarQube
-              - Gitleaks
-              - Snyk
-              - Trivy
-          uniqueItems: true
-          ui:widget: checkboxes
-    - title: App-Specific Information 
-      required:
-        - app_port
-        - env_properties
-        - docker_ignore_files
-        - packages
-      properties:
-        app_port:
-          title: App Port
-          type: string
-          description: Port that the App should Run On (4-digit number)
-          pattern: '^[0-9]{4}$'
-          default: "8080"
-        env_properties:
-          title: Environment Properties
-          type: array
-          description: Environment Properties Required for App
-          items:
-            type: string
-            title: Env Properties 
-            description: Enter an env property
-          ui:options:
-            addable: true
-            orderable: false
-            removable: true
-        docker_ignore_files:
-          title: Docker Ignore Files
-          type: array
-          description: Docker Ignore Files
-          items:
-            type: string
-            title: Docker Ignore Files 
-            description: Enter a file name
-          ui:options:
-            addable: true
-            orderable: false
-            removable: true 
-        packages:
-          title: Packages
-          type: array
-          description: Packages to be run
-          items:
-            type: string
-            title: Packages to be run 
-            description: Enter a package name
-          ui:options:
-            addable: true
-            orderable: false
-            removable: true 
-    - title: Artifactory
-      required:
-        - artifactory
-      properties:
-        artifactory:
-          title: Artifactory Tool
-          type: string
-          description: The artifactory tool to be used
-          enum:
-            - Jfrog
-            - Nexus
-            - Azure Artifactory
+    # - title: Pipeline Configuration 
+    #   required:
+    #     - pipeline_tool
+    #   properties:
+    #     pipeline_tool:
+    #       title: Pipeline Tool
+    #       type: string
+    #       description: The pipeline tool to be used
+    #       enum:
+    #         - Jenkins
+    #         - Github Actions
+    #         - Azure DevOps
+    #     additional_users:
+    #       title: Additional Users 
+    #       type: array
+    #       description: Add usernames of people who should have access to the pipeline
+    #       items:
+    #         type: string
+    #         title: Username 
+    #         description: Enter a username
+    #       ui:options:
+    #         addable: true
+    #         orderable: false
+    #         removable: true 
+    # - title: Select Security Scans
+    #   properties:
+    #     enabledStages:
+    #       title: Select Security Scans
+    #       type: array
+    #       items:
+    #         type: string
+    #         enum:
+    #           - SonarQube
+    #           - Gitleaks
+    #           - Snyk
+    #           - Trivy
+    #       uniqueItems: true
+    #       ui:widget: checkboxes
+    # - title: App-Specific Information 
+    #   required:
+    #     - app_port
+    #     - env_properties
+    #     - docker_ignore_files
+    #     - packages
+    #   properties:
+    #     app_port:
+    #       title: App Port
+    #       type: string
+    #       description: Port that the App should Run On (4-digit number)
+    #       pattern: '^[0-9]{4}$'
+    #       default: "8080"
+    #     env_properties:
+    #       title: Environment Properties
+    #       type: array
+    #       description: Environment Properties Required for App
+    #       items:
+    #         type: string
+    #         title: Env Properties 
+    #         description: Enter an env property
+    #       ui:options:
+    #         addable: true
+    #         orderable: false
+    #         removable: true
+    #     docker_ignore_files:
+    #       title: Docker Ignore Files
+    #       type: array
+    #       description: Docker Ignore Files
+    #       items:
+    #         type: string
+    #         title: Docker Ignore Files 
+    #         description: Enter a file name
+    #       ui:options:
+    #         addable: true
+    #         orderable: false
+    #         removable: true 
+    #     packages:
+    #       title: Packages
+    #       type: array
+    #       description: Packages to be run
+    #       items:
+    #         type: string
+    #         title: Packages to be run 
+    #         description: Enter a package name
+    #       ui:options:
+    #         addable: true
+    #         orderable: false
+    #         removable: true 
+    # - title: Artifactory
+    #   required:
+    #     - artifactory
+    #   properties:
+    #     artifactory:
+    #       title: Artifactory Tool
+    #       type: string
+    #       description: The artifactory tool to be used
+    #       enum:
+    #         - Jfrog
+    #         - Nexus
+    #         - Azure Artifactory
 
   steps:
     - id: execute-python
       name: Execute python script
       action: custom:execute-python
       input:
-        script: ./hello.py
+        script: hello.py
 
     # - id: fetch-base
     #   name: Fetch Base
