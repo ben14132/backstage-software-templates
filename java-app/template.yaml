@@ -139,9 +139,10 @@ spec:
   steps:
     - id: fetch-script
       name: Fetch Python Script
-      action: fetch:plain
+      action: fetch:plain:file
       input:
         url: ./hello.py
+        targetPath: hello.py
     
     - id: execute-python
       name: Execute python script
