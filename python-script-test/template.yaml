@@ -9,33 +9,30 @@ spec:
   type: service
 
   parameters:
-    - title: Fill in Component Information
+    - title: Python Script Options
       required:
-        - component_id
-        - environment
-        - base_image
-        - owner
+        - python_path
       properties:
-        component_id:
-          title: Component name
+        python_path:
+          title: Python Path
           type: string
-          description: Provide a component (microservice) name
-          pattern: '^([a-zA-Z][a-zA-Z0-9]*)(-[a-zA-Z0-9]+)*$'
-        environment:
-          title: Environment
-          type: string
-          description: The environment where this component will be deployed
+          description: Python path to be used
           enum:
-            - dev
-            - prod
-        base_image:
-          title: Base Image
-          type: string
-          description: The base image used to build the app
-        owner:
-          title: Owner
-          type: string
-          description: Owner of the app
+            - python 
+            - python3
+        script_args:
+          title: Script Arguments
+          type: array
+          description: Script arguments required 
+          items:
+            type: string
+            title: Script Arguments
+            description: Enter a script argument
+          ui:options:
+            addable: true
+            orderable: false
+            removable: true
+
   steps:
     - id: fetch-script
       name: Fetch Python Script
@@ -49,6 +46,5 @@ spec:
       action: custom:execute-python
       input:
         script: hello.py
-        pythonPath: python3
-        args:
-         - "john"
+        pythonPath: ${{ parameters.python_path }}
+        args: ${{ parameters.script_args }}
