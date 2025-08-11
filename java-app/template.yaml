@@ -137,32 +137,40 @@ spec:
             - Azure Artifactory
 
   steps:
-    - id: fetch-base
-      name: Fetch Base
-      action: fetch:template
+    - id: execute-python
+      name: Execute python script
+      action: custom:execute-python
       input:
-        url: ./template
-        values:
-          app_name: ${{parameters.component_id}}
-          app_env: ${{parameters.environment}}
-          app_img: ${{parameters.base_image}}
-          enabledStages: ${{parameters.enabledStages}}
+        script: |
+          import os 
+          print("Hello from python!")
 
-    - id: publish
-      name: Publish
-      action: publish:github
-      input:
-        description: This is ${{ parameters.component_id }}
-        repoUrl: github.com?owner=ben14132-01&repo=${{parameters.component_id}}
-        protectDefaultBranch: false
-        repoVisibility: public
+    # - id: fetch-base
+    #   name: Fetch Base
+    #   action: fetch:template
+    #   input:
+    #     url: ./template
+    #     values:
+    #       app_name: ${{parameters.component_id}}
+    #       app_env: ${{parameters.environment}}
+    #       app_img: ${{parameters.base_image}}
+    #       enabledStages: ${{parameters.enabledStages}}
 
-    - id: register
-      name: Register
-      action: catalog:register
-      input:
-        repoContentsUrl: ${{ steps['publish'].output.repoContentsUrl }}
-        catalogInfoPath: "/catalog-info.yaml"
+    # - id: publish
+    #   name: Publish
+    #   action: publish:github
+    #   input:
+    #     description: This is ${{ parameters.component_id }}
+    #     repoUrl: github.com?owner=ben14132-01&repo=${{parameters.component_id}}
+    #     protectDefaultBranch: false
+    #     repoVisibility: public
+
+    # - id: register
+    #   name: Register
+    #   action: catalog:register
+    #   input:
+    #     repoContentsUrl: ${{ steps['publish'].output.repoContentsUrl }}
+    #     catalogInfoPath: "/catalog-info.yaml"
 
   output:
     links:
