@@ -141,7 +141,7 @@ spec:
       name: Execute python script
       action: custom:execute-python
       input:
-        script: hello.py
+        script: ./hello.py
 
     # - id: fetch-base
     #   name: Fetch Base
