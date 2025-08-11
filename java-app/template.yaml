@@ -136,6 +136,7 @@ spec:
             - Nexus
             - Azure Artifactory
 
+  steps:
     - id: fetch-base
       name: Fetch Base
       action: fetch:template
