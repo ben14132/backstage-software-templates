@@ -149,6 +149,9 @@ spec:
       action: custom:execute-python
       input:
         script: hello.py
+        pythonPath: python3
+        args:
+         - "john"
 
     # - id: fetch-base
     #   name: Fetch Base
