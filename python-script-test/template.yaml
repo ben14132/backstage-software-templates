@@ -1,0 +1,54 @@
+apiVersion: scaffolder.backstage.io/v1beta3
+kind: Template
+metadata:
+  name: python-script
+  title: Python Script Test
+  description: Test out custom python execution action 
+spec:
+  owner: development
+  type: service
+
+  parameters:
+    - title: Fill in Component Information
+      required:
+        - component_id
+        - environment
+        - base_image
+        - owner
+      properties:
+        component_id:
+          title: Component name
+          type: string
+          description: Provide a component (microservice) name
+          pattern: '^([a-zA-Z][a-zA-Z0-9]*)(-[a-zA-Z0-9]+)*$'
+        environment:
+          title: Environment
+          type: string
+          description: The environment where this component will be deployed
+          enum:
+            - dev
+            - prod
+        base_image:
+          title: Base Image
+          type: string
+          description: The base image used to build the app
+        owner:
+          title: Owner
+          type: string
+          description: Owner of the app
+  steps:
+    - id: fetch-script
+      name: Fetch Python Script
+      action: fetch:plain:file
+      input:
+        url: ./hello.py
+        targetPath: hello.py
+    
+    - id: execute-python
+      name: Execute python script
+      action: custom:execute-python
+      input:
+        script: hello.py
+        pythonPath: python3
+        args:
+         - "john"
